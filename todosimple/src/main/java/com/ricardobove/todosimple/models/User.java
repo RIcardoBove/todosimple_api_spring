@@ -48,7 +48,7 @@ public class User {
     @Size(groups = {CreateUser.class, UpdateUser.class} ,min = 8, max = 60)
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user")       
     private List<Task> tasks = new ArrayList<Task>(); 
 
    public User() {
