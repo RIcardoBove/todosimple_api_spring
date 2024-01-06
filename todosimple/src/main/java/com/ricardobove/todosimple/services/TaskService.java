@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ricardobove.todosimple.models.Task;
 import com.ricardobove.todosimple.models.User;
@@ -26,9 +27,30 @@ public class TaskService {
         ));
     }
 
+    @Transactional
     public Task create(Task obj){
         User user = this.userService.findUserById(obj.getUser().getId());
-        obj.setId(0);
+        obj.setId(null);
+        obj.setUser(user);
+        obj = this.taskRepository.save(obj);
+        return obj;
+    }
+
+    public Task update(Task obj){
+        Task newObj = findById(obj.getId());
+        newObj.setDescription(obj.getDescription());
+        return this.taskRepository.save(newObj);
+    }
+
+    public void delete(Long id){
+        findById(id);
+        try {
+              this.taskRepository.deleteById(id);
+        } catch (Exception e) {
+           throw new RuntimeException
+           ("Não é possivel excluir pois há entidades relacionadas!");
+        }
+       
     }
     
 }
